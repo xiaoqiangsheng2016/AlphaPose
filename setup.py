@@ -121,6 +121,14 @@ def get_ext_modules():
     # only windows visual studio 2013+ support compile c/cuda extensions
     # If you force to compile extension on Windows and ensure appropriate visual studio
     # is intalled, you can try to use these ext_modules.
+    ext_modules = [
+        make_cython_ext(
+            name='soft_nms_cpu',
+            module='detector.nms',
+            sources=['src/soft_nms_cpu.pyx'])
+    ]
+    return ext_modules
+
     force_compile = False
     if platform.system() != 'Windows' or force_compile:
         ext_modules = [
@@ -174,8 +182,9 @@ def get_install_requires():
 
 
 def is_installed(package_name):
-    from pip._internal.utils.misc import get_installed_distributions
-    for p in get_installed_distributions():
+    # from pip._internal.utils.misc import get_installed_distributions
+    import pkg_resources
+    for p in pkg_resources.working_set:
         if package_name in p.egg_name():
             return True
     return False

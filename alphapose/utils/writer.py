@@ -124,6 +124,8 @@ class DataWriter():
                     self.eval_joints = [*range(0,68)]
                 elif hm_data.size()[1] == 21:
                     self.eval_joints = [*range(0,21)]
+                else:
+                    self.eval_joints = [*range(0, hm_data.size()[1])]
                 pose_coords = []
                 pose_scores = []
                 for i in range(hm_data.shape[0]):

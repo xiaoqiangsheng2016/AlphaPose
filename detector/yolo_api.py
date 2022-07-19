@@ -286,7 +286,7 @@ class YOLODetector(BaseDetector):
                 det_dict["category_id"] = 1
                 det_dict["score"] = float(dets[i, 5])
                 det_dict["bbox"] = [x, y, w, h]
-                det_dict["image_id"] = int(os.path.basename(img_name).split('.')[0])
+                # det_dict["image_id"] = int(os.path.basename(img_name).split('.')[0])
                 dets_results.append(det_dict)
 
             return dets_results

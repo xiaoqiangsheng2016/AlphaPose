@@ -202,13 +202,13 @@ class SimpleTransform(object):
             xmin, ymin, xmax - xmin, ymax - ymin, self._aspect_ratio)
 
         # half body transform
-        if self._train and (np.sum(joints_vis[:, 0]) > self.num_joints_half_body and np.random.rand() < self.prob_half_body):
-            c_half_body, s_half_body = self.half_body_transform(
-                gt_joints[:, :, 0], joints_vis
-            )
-
-            if c_half_body is not None and s_half_body is not None:
-                center, scale = c_half_body, s_half_body
+        # if self._train and (np.sum(joints_vis[:, 0]) > self.num_joints_half_body and np.random.rand() < self.prob_half_body):
+        #     c_half_body, s_half_body = self.half_body_transform(
+        #         gt_joints[:, :, 0], joints_vis
+        #     )
+        #
+        #     if c_half_body is not None and s_half_body is not None:
+        #         center, scale = c_half_body, s_half_body
 
         # rescale
         if self._train:
@@ -225,14 +225,14 @@ class SimpleTransform(object):
             r = 0
 
         joints = gt_joints
-        if random.random() > 0.5 and self._train:
-            # src, fliped = random_flip_image(src, px=0.5, py=0)
-            # if fliped[0]:
-            assert src.shape[2] == 3
-            src = src[:, ::-1, :]
-
-            joints = flip_joints_3d(joints, imgwidth, self._joint_pairs)
-            center[0] = imgwidth - center[0] - 1
+        # if random.random() > 0.5 and self._train:
+        #     # src, fliped = random_flip_image(src, px=0.5, py=0)
+        #     # if fliped[0]:
+        #     assert src.shape[2] == 3
+        #     src = src[:, ::-1, :]
+        #
+        #     joints = flip_joints_3d(joints, imgwidth, self._joint_pairs)
+        #     center[0] = imgwidth - center[0] - 1
 
         inp_h, inp_w = input_size
         trans = get_affine_transform(center, scale, r, [inp_w, inp_h])
@@ -242,6 +242,10 @@ class SimpleTransform(object):
         for i in range(self.num_joints):
             if joints[i, 0, 1] > 0.0:
                 joints[i, 0:2, 0] = affine_transform(joints[i, 0:2, 0], trans)
+
+        # for i in range(len(joints)):
+        #     cv2.circle(img, center=(int(joints[i, 0, 0]), int(joints[i, 1, 0])), radius=2, color=(255, 0, 0))
+        # cv2.imwrite("test.jpg", img)
 
         # generate training targets
         if self._loss_type == 'MSELoss':
