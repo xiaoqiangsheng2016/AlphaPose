@@ -1,4 +1,13 @@
-"""Script for multi-gpu training."""
+"""
+Script for multi-gpu training.
+
+--cfg ./configs/coco/resnet/kpts_front_256x192_res50_lr1e-3_1x.yaml --exp-id exp_fastpose --nThreads 1 --snapshot 10
+
+--cfg ./configs/coco/resnet/kpts_side_256x192_res50_lr1e-3_1x.yaml --exp-id exp_fastpose --nThreads 1 --snapshot 10
+
+"""
+
+
 import json
 import os
 import sys
@@ -283,7 +292,7 @@ def main():
     opt.trainIters = 0
 
     for i in range(cfg.TRAIN.BEGIN_EPOCH, cfg.TRAIN.END_EPOCH):
-        opt.epoch = i
+        opt.epoch = i+1
         current_lr = optimizer.state_dict()['param_groups'][0]['lr']
 
         logger.info(f'############# Starting Epoch {opt.epoch} | LR: {current_lr} #############')
@@ -294,14 +303,14 @@ def main():
 
         lr_scheduler.step()
 
-        if (i + 1) % opt.snapshot == 0:
+        if (opt.epoch % opt.snapshot) == 0:
             # Save checkpoint
             torch.save(m.module.state_dict(), './exp/{}-{}/model_{}.pth'.format(opt.exp_id, cfg.FILE_NAME, opt.epoch))
             # Prediction Test
-            with torch.no_grad():
-                gt_AP = validate_gt(m.module, opt, cfg, heatmap_to_coord)
-                rcnn_AP = validate(m.module, opt, heatmap_to_coord)
-                logger.info(f'##### Epoch {opt.epoch} | gt mAP: {gt_AP} | rcnn mAP: {rcnn_AP} #####')
+            # with torch.no_grad():
+            #     gt_AP = validate_gt(m.module, opt, cfg, heatmap_to_coord)
+            #     rcnn_AP = validate(m.module, opt, heatmap_to_coord)
+            #     logger.info(f'##### Epoch {opt.epoch} | gt mAP: {gt_AP} | rcnn mAP: {rcnn_AP} #####')
 
         # Time to add DPG
         if i == cfg.TRAIN.DPG_MILESTONE:

@@ -30,7 +30,7 @@ class kpts_front(CustomDataset):
     """
     CLASSES = ['person']
     EVAL_JOINTS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-    num_joints = 52
+    num_joints = 70
     joint_pairs = [[1, 2], [3, 4], [5, 6], [7, 8],
                    [9, 10], [11, 12], [13, 14], [15, 16]]
 
