@@ -6,7 +6,7 @@ import time
 import numpy as np
 from Cython.Build import cythonize
 from setuptools import Extension, find_packages, setup
-from torch.utils.cpp_extension import BuildExtension, CUDAExtension
+from torch.utils.cpp_extension import BuildExtension, CUDAExtension, CppExtension
 
 MAJOR = 0
 MINOR = 5
@@ -100,6 +100,21 @@ def make_cython_ext(name, module, sources):
     extension, = cythonize(extension)
     return extension
 
+def make_cpp_ext(name, module, sources):
+    extra_compile_args = None
+    if platform.system() != 'Windows':
+        extra_compile_args = {
+            'cxx': ['-Wno-unused-function', '-Wno-write-strings']
+        }
+
+    extension = CppExtension(
+        '{}.{}'.format(module, name),
+        [os.path.join(*module.split('.'), p) for p in sources],
+        include_dirs=[np.get_include()],
+        language='c++',
+        extra_compile_args=extra_compile_args)
+    extension, = cythonize(extension)
+    return extension
 
 def make_cuda_ext(name, module, sources):
 
@@ -125,7 +140,11 @@ def get_ext_modules():
         make_cython_ext(
             name='soft_nms_cpu',
             module='detector.nms',
-            sources=['src/soft_nms_cpu.pyx'])
+            sources=['src/soft_nms_cpu.pyx']),
+        make_cpp_ext(
+            name='nms_cpu',
+            module='detector.nms',
+            sources=['src/nms_cpu.cpp']),
     ]
     return ext_modules
 
