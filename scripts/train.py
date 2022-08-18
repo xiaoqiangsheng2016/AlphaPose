@@ -313,18 +313,18 @@ def main():
             #     logger.info(f'##### Epoch {opt.epoch} | gt mAP: {gt_AP} | rcnn mAP: {rcnn_AP} #####')
 
         # Time to add DPG
-        if i == cfg.TRAIN.DPG_MILESTONE:
-            torch.save(m.module.state_dict(), './exp/{}-{}/final.pth'.format(opt.exp_id, cfg.FILE_NAME))
-            # Adjust learning rate
-            for param_group in optimizer.param_groups:
-                param_group['lr'] = cfg.TRAIN.LR
-            lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=cfg.TRAIN.DPG_STEP, gamma=0.1)
-            # Reset dataset
-            train_dataset = builder.build_dataset(cfg.DATASET.TRAIN, preset_cfg=cfg.DATA_PRESET, train=True, dpg=True)
-            train_loader = torch.utils.data.DataLoader(
-                train_dataset, batch_size=cfg.TRAIN.BATCH_SIZE * num_gpu, shuffle=True, num_workers=opt.nThreads)
+        # if i == cfg.TRAIN.DPG_MILESTONE:
+        #     torch.save(m.module.state_dict(), './exp/{}-{}/final.pth'.format(opt.exp_id, cfg.FILE_NAME))
+        #     # Adjust learning rate
+        #     for param_group in optimizer.param_groups:
+        #         param_group['lr'] = cfg.TRAIN.LR
+        #     lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=cfg.TRAIN.DPG_STEP, gamma=0.1)
+        #     # Reset dataset
+        #     train_dataset = builder.build_dataset(cfg.DATASET.TRAIN, preset_cfg=cfg.DATA_PRESET, train=True, dpg=True)
+        #     train_loader = torch.utils.data.DataLoader(
+        #         train_dataset, batch_size=cfg.TRAIN.BATCH_SIZE * num_gpu, shuffle=True, num_workers=opt.nThreads)
 
-    torch.save(m.module.state_dict(), './exp/{}-{}/final_DPG.pth'.format(opt.exp_id, cfg.FILE_NAME))
+    # torch.save(m.module.state_dict(), './exp/{}-{}/final_DPG.pth'.format(opt.exp_id, cfg.FILE_NAME))
 
 
 def preset_model(cfg):
