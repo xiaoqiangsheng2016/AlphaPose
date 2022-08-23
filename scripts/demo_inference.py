@@ -1,4 +1,10 @@
-"""Script for single-gpu/multi-gpu demo."""
+"""
+Script for single-gpu/multi-gpu demo.
+--cfg ./configs/coco/resnet/kpts_front_256x192_res50_lr1e-3_1x.yaml --checkpoint ./exp/exp_fastpose-kpts_front_256x192_res50_lr1e-3_1x.yaml/model_400.pth --image ./images/00.png
+--cfg ./configs/coco/resnet/kpts_side_256x192_res50_lr1e-3_1x.yaml --checkpoint ./exp/exp_fastpose-kpts_side_256x192_res50_lr1e-3_1x.yaml/model_100.pth --image ./images/00000007.jpg
+"""
+
+
 import argparse
 import os
 import platform
