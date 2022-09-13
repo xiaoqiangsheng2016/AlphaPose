@@ -146,6 +146,14 @@ class PoseSide(object):
 pose_front = PoseFront()
 pose_side = PoseSide()
 
+def preprocess_image(filepath):
+    image = cv2.imread(filepath)
+    height, width, channel = image.shape
+    if max(height, width) > 2048:
+        scale = 1920 / max(height, width)
+        image = cv2.resize(image, None, fx=scale, fy=scale)
+        cv2.imwrite(filepath, image)
+
 if __name__ == '__main__':
     # image, preds = pose_front.do_detect("./storage/images/1658416958339222600_front.jpg")
     # cv2.imshow("f", image)
@@ -157,6 +165,7 @@ if __name__ == '__main__':
 
 
     data_type = 'side'
+    dir_path = f"D:/project/smpl/files/2022.8.28/jiaodui31p/jiaodui31p/{data_type}/*.*"
 
     front_labelme_configs = [
         {'name': '颈围', 'index': [0, 1], 'shape_type': 'line'},
@@ -233,11 +242,12 @@ if __name__ == '__main__':
         raise ValueError("error!")
 
     # filelist = glob.glob("D:/project/smpl/files/unlabeled/*.*")
-    filelist = glob.glob(f"D:/project/smpl/files/2022.8.16/2022.8.16_{data_type}/*.*")
+    filelist = glob.glob(dir_path)
     for filepath in tqdm(filelist):
         basename, ext = os.path.splitext(filepath)
         if ext in [".jpg", ".jpeg", ".png"]:
             shapes = []
+            preprocess_image(filepath)
             img, preds = detector.do_detect(filepath)
             for labelme_config in labelme_configs:
                 shape = {}
